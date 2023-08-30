@@ -1,7 +1,6 @@
 import requests
 import dns.resolver
 from telegram import Bot
-import websites
 import asyncio
 
 # 你的Telegram Bot的API Token
