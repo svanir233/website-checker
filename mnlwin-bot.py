@@ -1,11 +1,8 @@
 import requests
 import dns.resolver
 from telegram import Bot
+import websites
 import asyncio
-
-#pip install requests
-#pip install python-telegram-bot
-#pip install dnspython
 
 # 你的Telegram Bot的API Token
 TELEGRAM_API_TOKEN = "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss"
@@ -63,12 +60,7 @@ async def send_telegram_message(message):
     await bot.send_message(chat_id=TARGET_GROUP_CHAT_ID, text=message, parse_mode='Markdown')
 
 async def main():
-    website_urls = [
-        "https://www.bet86.ph",
-        "https://www.bet86.online",
-        "https://www.bet86.games",
-        "https://www.xshoppy-china.com/"
-    ]
+    websites_url = websites(websites_url)
     interval = 60
 
     while True:
