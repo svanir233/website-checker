@@ -9,8 +9,10 @@ import asyncio
 TELEGRAM_API_TOKEN = "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss"
 # 目标Telegram群组的Chat ID
 TARGET_GROUP_CHAT_ID = 561085525  # 替换为你的群组Chat ID
-# 目标resolv.conf的位置
-CUSTOM_RESOLVER_PATH = '/data/data/com.termux/files/usr/etc/resolv.conf'
+# resolv.conf的位置
+CUSTOM_RESOLVER_PATH = "/data/data/com.termux/files/usr/etc/resolv.conf"
+# 你的Facebook的Access Token
+FACEBOOK_ACCESS_TOKEN = "EAAJFyRQdRMUBOZCqZAJgmYZClkUqMwqPPjl0AQhhAnIAfNv3KLZAU7Kk1kuYUIiI3EkxkGstk5rvZADu1cg9WGf4yFbCDNku4e2joiZBOtZAl8Cowuxnzb29UroQwiBWYem4FYkPXL7u5lZBKnzQAKGaGjQuOfmqVbLnrGOop29ZBgbaSY3OIUvofZATTRbMha5nDdog1GFXyTAMcZCw2L1DgZDZD"
 
 def check_website_status(url):
     try:
@@ -48,13 +50,11 @@ def get_public_ip():
     
 def check_facebook_status(url):
     latest_graph_api_version = "v17.0"  # 替换为最新的 Graph API 版本
-    user_access_token = "EAAJFyRQdRMUBOZCqZAJgmYZClkUqMwqPPjl0AQhhAnIAfNv3KLZAU7Kk1kuYUIiI3EkxkGstk5rvZADu1cg9WGf4yFbCDNku4e2joiZBOtZAl8Cowuxnzb29UroQwiBWYem4FYkPXL7u5lZBKnzQAKGaGjQuOfmqVbLnrGOop29ZBgbaSY3OIUvofZATTRbMha5nDdog1GFXyTAMcZCw2L1DgZDZD"  # 替换为你的用户访问令牌
-
     api_url = f"https://graph.facebook.com/{latest_graph_api_version}/"
     params = {
         "id": url,
         "scrape": "true",
-        "access_token": user_access_token,
+        "access_token": FACEBOOK_ACCESS_TOKEN,
     }
     try:
             response = requests.post(api_url,params=params,timeout=10)
