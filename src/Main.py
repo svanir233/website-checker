@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+print("Current working directory:", os.getcwd())
 import asyncio
 from src.ConfigLoader import ConfigLoader
 from src.WebsiteChecker import WebsiteChecker
@@ -5,7 +9,7 @@ from src.TelegramBot import TelegramBot
 
 async def main():
     #LOAD CONFIG
-    config = ConfigLoader.load_config('config.json')
+    config = ConfigLoader.load_config('config/config.json')
     if not config:
         print("No valid config found. Exiting...")
         return
