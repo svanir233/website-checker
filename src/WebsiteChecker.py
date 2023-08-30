@@ -1,6 +1,6 @@
 import requests
 import dns.resolver
-from CustomResolver import CustomResolver
+from src.CustomResolver import CustomResolver
 
 class WebsiteChecker:
     def __init__(self, custom_resolver_path, facebook_access_token):
