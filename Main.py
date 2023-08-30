@@ -1,25 +1,24 @@
 import requests
 import dns.resolver
 from CustomResolver import CustomResolver
-from bs4 import BeautifulSoup
 from telegram import Bot
 import asyncio
 
-# 你的Telegram Bot的API Token
+# Telegram Bot API Token
 TELEGRAM_API_TOKEN = "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss"
-# 目标Telegram群组的Chat ID
-TARGET_GROUP_CHAT_ID = 561085525  # 替换为你的群组Chat ID
-# resolv.conf的位置
+# Telegram Group Chat ID
+TARGET_GROUP_CHAT_ID = 561085525
+# resolv.conf Location
 CUSTOM_RESOLVER_PATH = "/data/data/com.termux/files/usr/etc/resolv.conf"
-# 你的Facebook的Access Token
-FACEBOOK_ACCESS_TOKEN = "EAAJFyRQdRMUBOZCqZAJgmYZClkUqMwqPPjl0AQhhAnIAfNv3KLZAU7Kk1kuYUIiI3EkxkGstk5rvZADu1cg9WGf4yFbCDNku4e2joiZBOtZAl8Cowuxnzb29UroQwiBWYem4FYkPXL7u5lZBKnzQAKGaGjQuOfmqVbLnrGOop29ZBgbaSY3OIUvofZATTRbMha5nDdog1GFXyTAMcZCw2L1DgZDZD"
+# Facebook Access Token
+FACEBOOK_ACCESS_TOKEN = "EAAJFyRQdRMUBOZCjvR0kKxEZBFnP35IVRM2fvldPZCpeXCTe5gp2yjaW03KxuLFcf1fIIgcxWlyAqIwizXRyLFZBBWOjEriWeqiW6f7NSjXLZAzrYOZCueQ9gZAzohofzdIZBZAcpcuLjnPyfe8YUtZBhIjSrwoX2JCunInwJT7dUnTqjOVw699CdahVZAD7nBZBIMSEa02hnx3MXECGGOd7ZB10ZD"
 
 def check_website_status(url):
     try:
         response = requests.get(url,timeout=10)
         return response.status_code
     except requests.ConnectionError:
-        return "连接错误"
+        return "Connection Error"
 
 def get_a_records(domain):
     try:
@@ -44,12 +43,12 @@ def get_public_ip():
     try:
         response = requests.get("https://ipinfo.io",timeout=10)
         data = response.json()
-        return data.get("ip", "未知"), data.get("org", "未知运营商")
+        return data.get("ip", "Unknown"), data.get("org", "Unknown ISP")
     except Exception as e:
-        return "未知", "未知运营商"
+        return "Unknown", "Unknown ISP"
     
 def check_facebook_status(url):
-    latest_graph_api_version = "v17.0"  # 替换为最新的 Graph API 版本
+    latest_graph_api_version = "v17.0"
     api_url = f"https://graph.facebook.com/{latest_graph_api_version}/"
     params = {
         "id": url,
@@ -61,7 +60,7 @@ def check_facebook_status(url):
             data = response.json()
             return response.status_code, data
     except requests.ConnectionError:
-            return "连接错误"
+            return "Connection Error"
 
 async def send_telegram_message(message):
     bot = Bot(token=TELEGRAM_API_TOKEN)
@@ -92,40 +91,40 @@ async def main():
             cname_records = get_cname_records(domain)
 
             if isp_status == 200:
-                isp_status_with_emoji = "✅ 正常"
+                isp_status_with_emoji = "✅ Pass"
             elif isp_status == 403:
-                isp_status_with_emoji = "❌ 被封禁"
+                isp_status_with_emoji = "❌ Failed"
             else:
-                isp_status_with_emoji = "❓ 未知状态"
+                isp_status_with_emoji = "❓ Unknown"
             
             if facebook_status == 200:
-                facebook_status_with_emoji = "✅ 正常"
+                facebook_status_with_emoji = "✅ Pass"
             elif facebook_status == 400:
-                facebook_status_with_emoji = "❌ 被封禁"
+                facebook_status_with_emoji = "❌ Failed"
             else:
-                facebook_status_with_emoji = "❓ 未知状态"
+                facebook_status_with_emoji = "❓ Unknown"
 
             message = (
-                f"---------- {url} 的状态：----------\n\n"
-                f"# Facebook 封禁状态：{facebook_status_with_emoji}（状态码：{facebook_status}）\n"
-                f"  - API 返回值：{facebook_return}\n\n"
-                f"# ISP 封禁状态：{isp_status_with_emoji}（状态码：{isp_status}）\n"
-                f"  - 本机运营商：{isp}\n"
-                f"  - 本机公共 IP：{public_ip}\n\n"
-                f"# DNS 信息：\n"
+                f"---------- {url} Status: ----------\n\n"
+                f"# Facebook Status: {facebook_status_with_emoji} (Code: {facebook_status})\n"
+                f"  - API Response: {facebook_return}\n\n"
+                f"# ISP Status: {isp_status_with_emoji} (Code: {isp_status})\n"
+                f"  - Machine ISP: {isp}\n"
+                f"  - Machine IP: {public_ip}\n\n"
+                f"# DNS Lookup: \n"
             )
             
             if a_records:
-                message += "## A 记录:\n"
+                message += "## A Record:\n"
                 for answer in a_records:
-                    message += f"  - IP address: {answer.address}\n"
+                    message += f"  - IP Address: {answer.address}\n"
 
             if cname_records:
-                message += "## CNAME 记录:\n"
+                message += "## CNAME Record:\n"
                 for answer in cname_records:
-                    message += f"  - CNAME target: {answer.target}\n"
+                    message += f"  - CNAME Target: {answer.target}\n"
             else:
-                message += "## 没有 CNAME 记录\n"
+                message += "## CNAME Record Not Found\n"
 
             await send_telegram_message(message)
             print (message)
