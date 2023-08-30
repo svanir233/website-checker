@@ -60,7 +60,11 @@ async def send_telegram_message(message):
     await bot.send_message(chat_id=TARGET_GROUP_CHAT_ID, text=message, parse_mode='Markdown')
 
 async def main():
-    websites_url = websites(websites_url)
+    website_urls = [
+    "https://www.bet86.ph",
+    "https://www.bet86.online",
+    "https://www.bet86.games",
+    ]
     interval = 60
 
     while True:
