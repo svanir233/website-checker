@@ -1,6 +1,7 @@
 import requests
 import dns.resolver
 from CustomResolver import CustomResolver
+from bs4 import BeautifulSoup
 from telegram import Bot
 import asyncio
 
@@ -14,12 +15,7 @@ CUSTOM_RESOLVER_PATH = '/data/data/com.termux/files/usr/etc/resolv.conf'
 def check_website_status(url):
     try:
         response = requests.get(url,timeout=10)
-        if response.status_code == 200:
-            return "正常"
-        elif response.status_code == 403:
-            return "被封禁"
-        else:
-            return "未知状态"
+        return response.status_code
     except requests.ConnectionError:
         return "连接错误"
 
@@ -50,24 +46,32 @@ def get_public_ip():
     except Exception as e:
         return "未知", "未知运营商"
     
-def check_if_blocked(url):
-    debug_url = f"https://developers.facebook.com/tools/debug/echo/?q={url}"
-    response = requests.get(debug_url,timeout=10)
-    if "This Page Isn't Available" in response.text:
-        return True  # Page is likely blocked
-    else:
-        return False  # Page is accessible
+def check_facebook_status(url):
+    latest_graph_api_version = "v17.0"  # 替换为最新的 Graph API 版本
+    user_access_token = "EAAJFyRQdRMUBOZCqZAJgmYZClkUqMwqPPjl0AQhhAnIAfNv3KLZAU7Kk1kuYUIiI3EkxkGstk5rvZADu1cg9WGf4yFbCDNku4e2joiZBOtZAl8Cowuxnzb29UroQwiBWYem4FYkPXL7u5lZBKnzQAKGaGjQuOfmqVbLnrGOop29ZBgbaSY3OIUvofZATTRbMha5nDdog1GFXyTAMcZCw2L1DgZDZD"  # 替换为你的用户访问令牌
+
+    api_url = f"https://graph.facebook.com/{latest_graph_api_version}/"
+    params = {
+        "id": url,
+        "scrape": "true",
+        "access_token": user_access_token,
+    }
+    try:
+            response = requests.post(api_url,params=params,timeout=10)
+            data = response.json()
+            return response.status_code, data
+    except requests.ConnectionError:
+            return "连接错误"
 
 async def send_telegram_message(message):
     bot = Bot(token=TELEGRAM_API_TOKEN)
-    await bot.send_message(chat_id=TARGET_GROUP_CHAT_ID, text=message, parse_mode='Markdown')
+    await bot.send_message(chat_id=TARGET_GROUP_CHAT_ID, text=message, parse_mode='None')
 
 async def main():
 
     website_urls = [
     "https://www.bet86.ph",
-    "https://www.bet86.online",
-    "https://www.bet86.games",
+    "https://www.face-book.net"
     ]
     interval = 60
 
@@ -75,9 +79,9 @@ async def main():
         public_ip, isp = get_public_ip()
         
         for url in website_urls:
-            response = requests.get(url,timeout=10)
-            status_code = response.status_code
-            is_blocked_on_facebook = check_if_blocked(url)
+            isp_status = check_website_status(url)
+            facebook_status, facebook_return = check_facebook_status(url)
+
 
             if url.startswith("https://"):
                 domain = url[8:]
@@ -87,41 +91,44 @@ async def main():
             a_records = get_a_records(domain)
             cname_records = get_cname_records(domain)
 
-            if status_code == 200:
-                status_with_emoji = "✅ 正常"
-            elif status_code == 403:
-                status_with_emoji = "❌ 被封禁"
+            if isp_status == 200:
+                isp_status_with_emoji = "✅ 正常"
+            elif isp_status == 403:
+                isp_status_with_emoji = "❌ 被封禁"
             else:
-                status_with_emoji = "❓ 未知状态"
-            if is_blocked_on_facebook:
-                facebook_status = "❌ 封禁"
+                isp_status_with_emoji = "❓ 未知状态"
+            
+            if facebook_status == 200:
+                facebook_status_with_emoji = "✅ 正常"
+            elif facebook_status == 400:
+                facebook_status_with_emoji = "❌ 被封禁"
             else:
-                facebook_status = "✅ 正常"
-
-            print(f"\n{url} 的状态：{status_with_emoji}（状态码：{status_code}）")
+                facebook_status_with_emoji = "❓ 未知状态"
 
             message = (
-                f"# {url} 的状态：\n\n"
-                f"Facebook 封禁状态：{facebook_status}\n\n"
-                f"ISP 封禁状态：{status_with_emoji}（状态码：{status_code}）\n"
+                f"---------- {url} 的状态：----------\n\n"
+                f"# Facebook 封禁状态：{facebook_status_with_emoji}（状态码：{facebook_status}）\n"
+                f"  - API 返回值：{facebook_return}\n\n"
+                f"# ISP 封禁状态：{isp_status_with_emoji}（状态码：{isp_status}）\n"
                 f"  - 本机运营商：{isp}\n"
                 f"  - 本机公共 IP：{public_ip}\n\n"
-                f"## DNS 信息：\n"
+                f"# DNS 信息：\n"
             )
             
             if a_records:
-                message += "### A 记录:\n"
+                message += "## A 记录:\n"
                 for answer in a_records:
                     message += f"  - IP address: {answer.address}\n"
 
             if cname_records:
-                message += "### CNAME 记录:\n"
+                message += "## CNAME 记录:\n"
                 for answer in cname_records:
                     message += f"  - CNAME target: {answer.target}\n"
             else:
-                message += "### 没有 CNAME 记录\n"
+                message += "## 没有 CNAME 记录\n"
 
             await send_telegram_message(message)
+            print (message)
 
         await asyncio.sleep(interval)
 
