@@ -1,94 +1,34 @@
-import requests
-import dns.resolver
-from CustomResolver import CustomResolver
-from telegram import Bot
 import asyncio
-
-# Telegram Bot API Token
-TELEGRAM_API_TOKEN = "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss"
-# Telegram Group Chat ID
-TARGET_GROUP_CHAT_ID = 561085525
-# resolv.conf Location
-CUSTOM_RESOLVER_PATH = "/data/data/com.termux/files/usr/etc/resolv.conf"
-# Facebook Access Token
-FACEBOOK_ACCESS_TOKEN = "EAAJFyRQdRMUBOZCjvR0kKxEZBFnP35IVRM2fvldPZCpeXCTe5gp2yjaW03KxuLFcf1fIIgcxWlyAqIwizXRyLFZBBWOjEriWeqiW6f7NSjXLZAzrYOZCueQ9gZAzohofzdIZBZAcpcuLjnPyfe8YUtZBhIjSrwoX2JCunInwJT7dUnTqjOVw699CdahVZAD7nBZBIMSEa02hnx3MXECGGOd7ZB10ZD"
-
-def check_website_status(url):
-    try:
-        response = requests.get(url,timeout=10)
-        return response.status_code
-    except requests.ConnectionError:
-        return "Connection Error"
-
-def get_a_records(domain):
-    try:
-        resolver = CustomResolver(CUSTOM_RESOLVER_PATH)
-        answers = resolver.resolve(domain, rdtype=dns.rdatatype.A)
-        return answers
-    except dns.resolver.NXDOMAIN:
-        return []
-
-def get_cname_records(domain):
-    try:
-
-        resolver = CustomResolver(CUSTOM_RESOLVER_PATH)
-        answers = resolver.resolve(domain, rdtype=dns.rdatatype.CNAME)
-        return answers
-    except dns.resolver.NXDOMAIN:
-        return []
-    except dns.resolver.NoAnswer:
-        return []
-
-def get_public_ip():
-    try:
-        response = requests.get("https://ipinfo.io",timeout=10)
-        data = response.json()
-        return data.get("ip", "Unknown"), data.get("org", "Unknown ISP")
-    except Exception as e:
-        return "Unknown", "Unknown ISP"
-    
-def check_facebook_status(url):
-    latest_graph_api_version = "v17.0"
-    api_url = f"https://graph.facebook.com/{latest_graph_api_version}/"
-    params = {
-        "id": url,
-        "scrape": "true",
-        "access_token": FACEBOOK_ACCESS_TOKEN,
-    }
-    try:
-            response = requests.post(api_url,params=params,timeout=10)
-            data = response.json()
-            return response.status_code, data
-    except requests.ConnectionError:
-            return "Connection Error"
-
-async def send_telegram_message(message):
-    bot = Bot(token=TELEGRAM_API_TOKEN)
-    await bot.send_message(chat_id=TARGET_GROUP_CHAT_ID, text=message, parse_mode='None')
+from ConfigLoader import ConfigLoader
+from WebsiteChecker import WebsiteChecker
+from TelegramBot import TelegramBot
 
 async def main():
+    #LOAD CONFIG
+    config = ConfigLoader.load_config('config.json')
+    if not config:
+        print("No valid config found. Exiting...")
+        return
 
-    website_urls = [
-    "https://www.bet86.ph",
-    "https://www.face-book.net"
-    ]
-    interval = 60
+    #INSTANTIATE
+    website_checker = WebsiteChecker(config["custom_resolver_path"], config["facebook_access_token"])
+    telegram_bot = TelegramBot(config["telegram_api_token"])
 
+    #ALGORITHM
     while True:
-        public_ip, isp = get_public_ip()
+        public_ip, isp = website_checker.get_public_ip()
         
-        for url in website_urls:
-            isp_status = check_website_status(url)
-            facebook_status, facebook_return = check_facebook_status(url)
-
+        for url in config["website_urls"]:
+            isp_status = website_checker.check_website_status(url)
+            facebook_status, facebook_return = website_checker.check_facebook_status(url)
 
             if url.startswith("https://"):
                 domain = url[8:]
             else:
                 domain = url
 
-            a_records = get_a_records(domain)
-            cname_records = get_cname_records(domain)
+            a_records = website_checker.get_a_records(domain)
+            cname_records = website_checker.get_cname_records(domain)
 
             if isp_status == 200:
                 isp_status_with_emoji = "✅ Pass"
@@ -126,10 +66,10 @@ async def main():
             else:
                 message += "## CNAME Record Not Found\n"
 
-            await send_telegram_message(message)
-            print (message)
+            await telegram_bot.send_message(config["telegram_chat_id"], message, parse_mode='None')
+            print(message)
 
-        await asyncio.sleep(interval)
+        await asyncio.sleep(int(config["interval"]))
 
 if __name__ == "__main__":
     asyncio.run(main())
