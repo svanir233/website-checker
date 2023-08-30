@@ -1,6 +1,6 @@
 import requests
-import dns_resolver_termux
 import dns.resolver
+from CustomResolver import CustomResolver
 from telegram import Bot
 import asyncio
 
@@ -8,8 +8,8 @@ import asyncio
 TELEGRAM_API_TOKEN = "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss"
 # 目标Telegram群组的Chat ID
 TARGET_GROUP_CHAT_ID = 561085525  # 替换为你的群组Chat ID
-# 使用Termux Resolver
-dns.resolver.Resolver = dns_resolver_termux.TermuxResolver
+# 目标resolv.conf的位置
+CUSTOM_RESOLVER_PATH = '/data/data/com.termux/files/usr/etc/resolv.conf'
 
 def check_website_status(url):
     try:
@@ -25,7 +25,7 @@ def check_website_status(url):
 
 def get_a_records(domain):
     try:
-        resolver = dns.resolver.Resolver()
+        resolver = CustomResolver(CUSTOM_RESOLVER_PATH)
         answers = resolver.resolve(domain, rdtype=dns.rdatatype.A)
         return answers
     except dns.resolver.NXDOMAIN:
@@ -33,7 +33,8 @@ def get_a_records(domain):
 
 def get_cname_records(domain):
     try:
-        resolver = dns.resolver.Resolver()
+
+        resolver = CustomResolver(CUSTOM_RESOLVER_PATH)
         answers = resolver.resolve(domain, rdtype=dns.rdatatype.CNAME)
         return answers
     except dns.resolver.NXDOMAIN:
@@ -62,6 +63,7 @@ async def send_telegram_message(message):
     await bot.send_message(chat_id=TARGET_GROUP_CHAT_ID, text=message, parse_mode='Markdown')
 
 async def main():
+
     website_urls = [
     "https://www.bet86.ph",
     "https://www.bet86.online",
