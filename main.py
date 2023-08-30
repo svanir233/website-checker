@@ -1,6 +1,6 @@
 import requests
-import dns.resolver
 import dns_resolver_termux
+import dns.resolver
 from telegram import Bot
 import asyncio
 
@@ -8,6 +8,8 @@ import asyncio
 TELEGRAM_API_TOKEN = "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss"
 # 目标Telegram群组的Chat ID
 TARGET_GROUP_CHAT_ID = 561085525  # 替换为你的群组Chat ID
+# 使用Termux Resolver
+dns.resolver.Resolver = dns_resolver_termux.TermuxResolver
 
 def check_website_status(url):
     try:
@@ -23,7 +25,6 @@ def check_website_status(url):
 
 def get_a_records(domain):
     try:
-        dns.resolver.Resolver = dns_resolver_termux.TermuxResolver
         resolver = dns.resolver.Resolver()
         answers = resolver.resolve(domain, rdtype=dns.rdatatype.A)
         return answers
