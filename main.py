@@ -1,5 +1,6 @@
 import requests
 import dns.resolver
+import dns_resolver_termux
 from telegram import Bot
 import asyncio
 
@@ -22,6 +23,7 @@ def check_website_status(url):
 
 def get_a_records(domain):
     try:
+        dns.resolver.Resolver = dns_resolver_termux.TermuxResolver
         resolver = dns.resolver.Resolver()
         answers = resolver.resolve(domain, rdtype=dns.rdatatype.A)
         return answers
