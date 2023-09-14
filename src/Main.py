@@ -62,6 +62,8 @@ async def main():
                 message += "## A Record:\n"
                 for answer in a_records:
                     message += f"  - IP Address: {answer.address}\n"
+            else:
+                message += "## A Record Not Found\n"
 
             if cname_records:
                 message += "## CNAME Record:\n"
