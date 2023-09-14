@@ -4,10 +4,16 @@
     "custom_resolver_path": "/data/data/com.termux/files/usr/etc/resolv.conf",
     "facebook_access_token": "EAAJFyRQdRMUBOwovajlYSCzIjwFoY7BHp58uapFcUnuOhzgCp6E9oxMHRWOa2xq554BnV1RcDxaVOdANVZBEOLNhBA8I5pkyJpdF8EKCAAqYJEzv5mTyksRq2ikegckZAHzNCj9CMZCRw6oYWPYgFq1H8fV25UFiTPRW6MHezYL2NZAW4uLPNrrQ",
     "website_urls": [
-        "https://www.bet86.ph",
-        "https://www.bet86.online",
-        "https://www.bet86.games",
-        "https://www.face-book.net"
+        "https://www.mnlwin.ph",
+        "https://www.mnlwin.live",
+        "https://www.665238.net",
+        "https://www.665946.net",
+        "https://www.345546.net",
+        "https://www.336698.net",
+        "https://www.345786.net",
+        "https://www.336646.net",
+        "https://www.336888.net",
+        "https://www.166887.net"
       ],
-    "interval": "600"
+    "interval": "3600"
 }
