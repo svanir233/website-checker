@@ -16,20 +16,20 @@ class WebsiteChecker:
 
     def get_a_records(self, domain):
         try:
-            resolver = CustomResolver(self.custom_resolver_path, timeout=10)
+            resolver = CustomResolver(self.custom_resolver_path)
+            resolver.lifetime = 5.0
             answers = resolver.resolve(domain, rdtype=dns.rdatatype.A)
             return answers
-        except dns.resolver.NXDOMAIN:
+        except Exception as e:
             return []
 
     def get_cname_records(self, domain):
         try:
-            resolver = CustomResolver(self.custom_resolver_path, timeout=10)
+            resolver = CustomResolver(self.custom_resolver_path)
+            resolver.lifetime = 5.0
             answers = resolver.resolve(domain, rdtype=dns.rdatatype.CNAME)
             return answers
-        except dns.resolver.NXDOMAIN:
-            return []
-        except dns.resolver.NoAnswer:
+        except Exception as e:
             return []
 
     def get_public_ip(self):
