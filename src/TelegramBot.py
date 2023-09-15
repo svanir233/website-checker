@@ -15,7 +15,7 @@ class TelegramBot:
             try:
                 await bot.send_message(chat_id=chat_id, text=text, parse_mode=parse_mode)
                 return  # Exit the loop if the message is sent successfully
-            except telegram.error.TimedOut as e:
+            except Exception as e:
                 print(f"Telegram API request timed out: {e}")
                 retry_count += 1
                 if retry_count < self.retry_limit:
