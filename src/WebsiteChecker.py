@@ -52,5 +52,5 @@ class WebsiteChecker:
             response = requests.post(api_url, params=params, timeout=10)
             data = response.json()
             return response.status_code, data
-        except requests.ConnectionError:
-            return "Connection Error"
+        except Exception as e:
+            return "Connection Error", {}
