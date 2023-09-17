@@ -11,7 +11,7 @@ class WebsiteChecker:
         try:
             response = requests.get(url, timeout=10)
             return response.status_code
-        except requests.ConnectionError:
+        except Exception as e:
             return "Connection Error"
 
     def get_a_records(self, domain):
