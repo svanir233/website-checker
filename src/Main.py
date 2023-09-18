@@ -26,7 +26,7 @@ async def main():
             isp_status = website_checker.check_website_status(url)
             facebook_status, facebook_return = website_checker.check_facebook_status(url)
 
-            if url.startswith("https://"):
+            if url.startswith("https://") or url.startswith("http://"):
                 domain = url[8:]
             else:
                 domain = url
