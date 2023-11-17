@@ -2,7 +2,7 @@
   "telegram_api_token": "6591582102:AAF_v5S5X1ircq1u3YetDFlj5i7YerB58ss",
   "telegram_chat_id": "-1001950593271",
   "custom_resolver_path": "/data/data/com.termux/files/usr/etc/resolv.conf",
-  "facebook_access_token": "EAAJFyRQdRMUBOwovajlYSCzIjwFoY7BHp58uapFcUnuOhzgCp6E9oxMHRWOa2xq554BnV1RcDxaVOdANVZBEOLNhBA8I5pkyJpdF8EKCAAqYJEzv5mTyksRq2ikegckZAHzNCj9CMZCRw6oYWPYgFq1H8fV25UFiTPRW6MHezYL2NZAW4uLPNrrQ",
+  "facebook_access_token": "EAAJFyRQdRMUBO7ZCpZAFZCAxVxUcZAUbziNc8kDPJSXALpRHZBzIuwH66dx9Lwm9kOpMIy2RsaJoPgmZAtpPkziKSMUu0w1Xtv6rBAZC9TraG8qa46qS1vTZCtyp38vzLVDZCFi37FMGGcRTfQh3OYvYi0iYiFXn6Sm4RffS1IDCVvdKvzZCIF3NePuZAm6",
   "website_urls": [
       "https://www.mnlwin.ph",
       "https://www.mnlwin.live",
@@ -27,7 +27,9 @@
       "https://www.8899339.com",
       "https://www.9229995.com",
       "http://www.mn68.co",
-      "http://www.vr68.co"
+      "http://www.vr68.co",
+      "http://www.en88.co",
+      "http://www.yc88.co"
     ],
   "interval": "3600"
 }                             

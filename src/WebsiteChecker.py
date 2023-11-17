@@ -41,7 +41,7 @@ class WebsiteChecker:
             return "Unknown", "Unknown ISP"
     
     def check_facebook_status(self, url):
-        latest_graph_api_version = "v17.0"
+        latest_graph_api_version = "v18.0"
         api_url = f"https://graph.facebook.com/{latest_graph_api_version}/"
         params = {
             "id": url,
