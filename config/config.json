@@ -5,8 +5,12 @@
   "facebook_access_token": "EAAJFyRQdRMUBO7ZCpZAFZCAxVxUcZAUbziNc8kDPJSXALpRHZBzIuwH66dx9Lwm9kOpMIy2RsaJoPgmZAtpPkziKSMUu0w1Xtv6rBAZC9TraG8qa46qS1vTZCtyp38vzLVDZCFi37FMGGcRTfQh3OYvYi0iYiFXn6Sm4RffS1IDCVvdKvzZCIF3NePuZAm6",
   "website_urls": [
       "https://www.mnlwin.ph",
-      "https://www.mnlwin.live",
       "https://www.mnlwin.games",
+      "https://www.mnlwin.org",
+      "https://www.mnlwin.xyz",
+      "https://www.mnlwin.info",
+      "https://www.mnlwin.lol",
+      "https://www.mnlwin.net",
       "https://www.mnl2023.com",
       "https://www.mnl2023.xyz",
       "https://www.mnl2023.org",
@@ -24,11 +28,11 @@
       "https://www.335546.net",
       "https://www.166886.net",
       "https://www.166866.net",
-      "https://www.8899339.com",
       "https://www.9229995.com",
       "http://www.mn68.co",
       "http://www.vr68.co",
       "http://www.en88.co",
+      "http://www.yc88.co",
       "http://www.yc88.co"
     ],
   "interval": "3600"
