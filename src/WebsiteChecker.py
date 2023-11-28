@@ -9,7 +9,7 @@ class WebsiteChecker:
 
     def check_website_status(self, url):
         try:
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, timeout=15)
             return response.status_code
         except Exception as e:
             return "Connection Error"
@@ -34,7 +34,7 @@ class WebsiteChecker:
 
     def get_public_ip(self):
         try:
-            response = requests.get("https://ipinfo.io", timeout=10)
+            response = requests.get("https://ipinfo.io", timeout=15)
             data = response.json()
             return data.get("ip", "Unknown"), data.get("org", "Unknown ISP")
         except Exception as e:
@@ -49,7 +49,7 @@ class WebsiteChecker:
             "access_token": self.facebook_access_token,
         }
         try:
-            response = requests.post(api_url, params=params, timeout=10)
+            response = requests.post(api_url, params=params, timeout=15)
             data = response.json()
             return response.status_code, data
         except Exception as e:
